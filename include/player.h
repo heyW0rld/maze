@@ -1,6 +1,8 @@
 #ifndef LAB2_PLAYER_H
 #define LAB2_PLAYER_H
 
+#include <memory>
+
 #include "strategy.h"
 
 namespace labirint
@@ -15,10 +17,12 @@ namespace labirint
 
     class player
     {
+    public:
+        void setStrategy(std::unique_ptr<strategy> someStrategy);
     private:
         direction m_dirrection;
         unsigned m_x, m_y;
-        strategy m_strategy;
+        std::unique_ptr<strategy> m_strategy;
     };
 }
 

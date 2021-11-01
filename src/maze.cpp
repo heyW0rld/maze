@@ -8,3 +8,8 @@ void labirint::maze::uploadMap(const std::vector<std::vector<char>> &&map)
 {
     m_map.upload(std::move(map));
 }
+
+void labirint::maze::addPlayer(char number, const labirint::player &somePlayer)
+{
+    m_players[number] = somePlayer;
+}

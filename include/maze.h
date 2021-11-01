@@ -11,6 +11,7 @@ namespace labirint
     class maze
     {
     public:
+        void addPlayer(char number, const player &somePlayer);
         void uploadMap(const std::vector<std::vector<char>> &&map);
     private:
         map m_map;
