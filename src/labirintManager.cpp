@@ -1,87 +1,88 @@
 #include "labirintManager.h"
 
-void labirint::labirintManager::uploadMazeFromFile(const std::string &pathToFile, labirint::maze &someMaze)
+namespace labirint
 {
-    std::ifstream ifStream(pathToFile);
-
-    if(!ifStream.is_open())
+    void labirint::labirintManager::uploadMazeFromFile(const std::string &pathToFile, labirint::maze &someMaze)
     {
-        throw std::runtime_error("Dont open file");
-    }
+        std::ifstream ifStream(pathToFile);
 
-    unsigned widthOfMap = getWidth(ifStream);
-    unsigned heightOfMap = getHeight(ifStream);
-
-    std::vector<std::vector<char>> charMap(heightOfMap);
-    for(unsigned i = 0; i < heightOfMap; ++i)
-    {
-        std::vector<char> line(widthOfMap);
-        charMap[i] = line;
-        for(unsigned j = 0; j < widthOfMap; ++j)
-        {
-            charMap[i][j] = ifStream.get();
-            if(isPlayer(charMap[i][j]))
-            {
-                player somePlayer;
-                char numberOfPlayer = charMap[i][j] - '0';
-                somePlayer.setStrategy(strategyForPlayer(numberOfPlayer));
-                someMaze.addPlayer(numberOfPlayer, somePlayer);
-            }
+        if (!ifStream.is_open()) {
+            throw std::runtime_error("Dont open file");
         }
-        ifStream.get(); //символ переноса
+
+        unsigned widthOfMap = getWidth(ifStream);
+        unsigned heightOfMap = getHeight(ifStream);
+
+        std::vector<std::vector<char>> charMap(heightOfMap);
+        for (unsigned i = 0; i < heightOfMap; ++i)
+        {
+            std::vector<char> line(widthOfMap);
+            charMap[i] = line;
+            for (unsigned j = 0; j < widthOfMap; ++j)
+            {
+                charMap[i][j] = ifStream.get();
+                if (isPlayer(charMap[i][j]))
+                {
+                    player somePlayer;
+                    char numberOfPlayer = charMap[i][j] - '0';
+                    somePlayer.setStrategy(strategyForPlayer(numberOfPlayer));
+                    somePlayer.setCoords(j, i);
+                    someMaze.addPlayer(numberOfPlayer, std::move(somePlayer));
+                }
+            }
+            ifStream.get(); //символ переноса
+        }
+
+        someMaze.uploadMap(std::move(charMap));
     }
 
-    someMaze.uploadMap(std::move(charMap));
-}
 
-
-
-unsigned labirint::labirintManager::getWidth(std::ifstream &ifStream)
-{
-    ifStream.seekg(0, std::ios::beg);
-
-    unsigned width = 0;
-    while (ifStream.get() != '\n') {
-        width++;
-    }
-
-    ifStream.seekg(0, std::ios::beg);
-
-    return width;
-}
-
-unsigned labirint::labirintManager::getHeight(std::ifstream &ifStream) {
-    ifStream.seekg(0, std::ios::beg);
-
-    unsigned height = 0;
-    std::string tmpStr;
-    while (getline(ifStream, tmpStr))
+    unsigned labirint::labirintManager::getWidth(std::ifstream &ifStream)
     {
-        height++;
+        ifStream.seekg(0, std::ios::beg);
+
+        unsigned width = 0;
+        while (ifStream.get() != '\n') {
+            width++;
+        }
+
+        ifStream.seekg(0, std::ios::beg);
+
+        return width;
     }
 
-    ifStream.clear();
-    ifStream.seekg(0, std::ios::beg);
-
-    return height - 1;
-}
-
-std::unique_ptr<strategy> labirint::labirintManager::strategyForPlayer(char number) {
-    switch (number)
+    unsigned labirint::labirintManager::getHeight(std::ifstream &ifStream)
     {
-        case 1:
-            return std::make_unique<greedy>();
-        case 2:
-            return std::make_unique<leftHand>();
-        case 3:
-            return std::make_unique<rightHand>();
-        case 4:
-            return std::make_unique<backRevert>();
-    }
-}
+        ifStream.seekg(0, std::ios::beg);
 
-bool labirint::labirintManager::isPlayer(char symbol)
-{
-    return (symbol >= '1' && symbol <= '4')
+        unsigned height = 0;
+        std::string tmpStr;
+        while (getline(ifStream, tmpStr)) {
+            height++;
+        }
+
+        ifStream.clear();
+        ifStream.seekg(0, std::ios::beg);
+
+        return height - 1;
+    }
+
+    std::unique_ptr<strategy> labirint::labirintManager::strategyForPlayer(char number)
+    {
+        switch (number) {
+            case 1:
+                return std::make_unique<greedy>();
+//            case 2:
+//                return std::make_unique<leftHand>();
+//            case 3:
+//                return std::make_unique<rightHand>();
+//            case 4:
+//                return std::make_unique<backRevert>();
+        }
+    }
+
+    bool labirint::labirintManager::isPlayer(char symbol) {
+        return (symbol >= '1' && symbol <= '4');
+    }
 }
 

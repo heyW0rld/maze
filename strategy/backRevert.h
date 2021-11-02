@@ -7,10 +7,14 @@
 
 #include "strategy.h"
 
-class backRevert: public strategy
+namespace labirint
 {
+    class backRevert : public strategy {
+    public:
+//    void step() override;
 
-};
+    };
+}
 
 
 #endif //LAB2_BACKREVERT_H

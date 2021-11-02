@@ -7,6 +7,7 @@ int main(int argc, char** argv)
 {
     labirint::maze mainMaze;
     labirint::labirintManager::uploadMazeFromFile(std::string(argv[1]), mainMaze);
+    mainMaze.showMaze();
 
     return 0;
 }

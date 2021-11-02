@@ -11,11 +11,14 @@ namespace labirint
     class maze
     {
     public:
-        void addPlayer(char number, const player &somePlayer);
+        maze();
+        void addPlayer(char number, player &&somePlayer);
         void uploadMap(const std::vector<std::vector<char>> &&map);
+        void showMaze();
+        void clearShow();
     private:
         map m_map;
-        std::array<labirint::player, 4> m_players;
+        std::vector<labirint::player> m_players;
 
     };
 }

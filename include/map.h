@@ -11,7 +11,10 @@ namespace labirint
         std::vector<std::vector<char>> m_map;
 
     public:
+        char &getSymbol(unsigned x, unsigned y);
         void upload(const std::vector<std::vector<char>> &&map);
+        unsigned width();
+        unsigned heigth();
     };
 }
 

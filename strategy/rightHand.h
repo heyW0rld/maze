@@ -7,10 +7,15 @@
 
 #include "strategy.h"
 
-class rightHand: public strategy
+namespace labirint
 {
+    class rightHand : public strategy {
+    public:
+        //   void step() override;
 
-};
+    };
+}
+
 
 
 #endif //LAB2_RIGHTHAND_H

@@ -3,3 +3,9 @@
 //
 
 #include "leftHand.h"
+#include <iostream>
+
+namespace labirint
+{
+
+}

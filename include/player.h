@@ -3,22 +3,22 @@
 
 #include <memory>
 
-#include "strategy.h"
+#include "../strategy/strategy.h"
 
 namespace labirint
 {
-    enum class direction
-    {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT
-    };
+
 
     class player
     {
     public:
+        player() = default;
+        player(player&&);
         void setStrategy(std::unique_ptr<strategy> someStrategy);
+        void setCoords(unsigned x, unsigned y);
+        void step(labirint::map &someMap);
+
+        player& operator=(player &rhs) noexcept;
     private:
         direction m_dirrection;
         unsigned m_x, m_y;
