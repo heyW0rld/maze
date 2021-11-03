@@ -25,7 +25,7 @@ namespace labirint
                 {
                     player somePlayer;
                     char numberOfPlayer = charMap[i][j] - '0';
-                    somePlayer.setStrategy(strategyForPlayer(numberOfPlayer));
+                    somePlayer.setStrategy(strategyForPlayer(1));
                     somePlayer.setCoords(j, i);
                     someMaze.addPlayer(numberOfPlayer, std::move(somePlayer));
                 }

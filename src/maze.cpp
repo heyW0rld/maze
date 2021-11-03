@@ -33,6 +33,9 @@ void labirint::maze::showMaze()
             std::cout << std::endl;
         }
         m_players[0].step(m_map);
+        m_players[1].step(m_map);
+        m_players[2].step(m_map);
+        m_players[3].step(m_map);
     }
 }
 

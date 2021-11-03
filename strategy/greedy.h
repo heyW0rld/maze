@@ -1,6 +1,8 @@
 #ifndef LAB2_GREEDY_H
 #define LAB2_GREEDY_H
 
+#include <array>
+
 #include "strategy.h"
 
 namespace labirint
@@ -15,6 +17,10 @@ namespace labirint
 
         labirint::direction whereisMoney(labirint::map &someMap, unsigned &x, unsigned &y);
         labirint::direction whereisExit(labirint::map &someMap, unsigned &x, unsigned &y);
+        labirint::direction whereisWall(labirint::map &someMap, unsigned &x, unsigned &y);
+
+
+        bool scanLine(char symbol, labirint::map &someMap, labirint::direction someDirection, unsigned &x, unsigned &y);
     };
 }
 

@@ -11,7 +11,13 @@ namespace labirint
             m_y = y;
             m_currentDirrection = whereisMoney(someMap, m_x, m_y);
             if(m_currentDirrection == labirint::direction::HERE)
+            {
                 m_currentDirrection = whereisExit(someMap, m_x, m_y);
+                if(m_currentDirrection == labirint::direction::HERE) {
+                    m_currentDirrection = whereisWall(someMap, m_x, m_y);
+                }
+
+            }
         }
         else
         { //toDo вынести изменение позиции в стратегию (исходная позиция -> позиция, которая нашлась в функции внутри стратегии)
@@ -40,7 +46,7 @@ namespace labirint
                 }
             }
             else
-            {;
+            {
                 m_currentDirrection = labirint::direction::HERE;
             }
         }
@@ -49,70 +55,21 @@ namespace labirint
 
     labirint::direction greedy::whereisMoney(labirint::map &someMap, unsigned &x, unsigned &y)
     {
-        int curPosX, curPosY, stepX, stepY;
+        unsigned curPosX, curPosY;
 
-        curPosX = x;
-        curPosY = y;
-        stepX = 0;
-        stepY = -1;
+        std::array<labirint::direction, 4> directions {direction::UP, direction::RIGHT,
+                                                       direction::DOWN, direction::LEFT};
 
-        while (someMap.getSymbol(curPosX, curPosY) != '*' && someMap.getSymbol(curPosX, curPosY) != 'e')
+        for(auto dir : directions)
         {
-            curPosX += stepX;
-            curPosY += stepY;
-            if (someMap.getSymbol(curPosX, curPosY) == '$')
+            curPosX = x;
+            curPosY = y;
+
+            if(scanLine('$', someMap, dir, curPosX, curPosY))
             {
                 x = curPosX;
                 y = curPosY;
-                return labirint::direction::UP;
-            }
-        }
-
-        curPosX = x;
-        curPosY = y;
-        stepX = 1;
-        stepY = 0;
-        while (someMap.getSymbol(curPosX, curPosY) != '*' && someMap.getSymbol(curPosX, curPosY) != 'e')
-        {
-            curPosX += stepX;
-            curPosY += stepY;
-            if (someMap.getSymbol(curPosX, curPosY) == '$')
-            {
-                x = curPosX;
-                y = curPosY;
-                return labirint::direction::RIGHT;
-            }
-        }
-
-        curPosX = x;
-        curPosY = y;
-        stepX = 0;
-        stepY = 1;
-        while (someMap.getSymbol(curPosX, curPosY) != '*' && someMap.getSymbol(curPosX, curPosY) != 'e')
-        {
-            curPosX += stepX;
-            curPosY += stepY;
-            if (someMap.getSymbol(curPosX, curPosY) == '$')
-            {
-                x = curPosX;
-                y = curPosY;
-                return labirint::direction::DOWN;
-            }
-        }
-
-        curPosX = x;
-        curPosY = y;
-        stepX = -1;
-        stepY = 0;
-        while (someMap.getSymbol(curPosX, curPosY) != '*' && someMap.getSymbol(curPosX, curPosY) != 'e')
-        {
-            curPosX += stepX;
-            curPosY += stepY;
-            if (someMap.getSymbol(curPosX, curPosY) == '$')
-            {
-                x = curPosX;
-                y = curPosY;
-                return labirint::direction::LEFT;
+                return dir;
             }
         }
 
@@ -121,71 +78,104 @@ namespace labirint
 
     labirint::direction greedy::whereisExit(labirint::map &someMap, unsigned &x, unsigned &y)
     {
-        int curPosX, curPosY, stepX, stepY;
+        unsigned curPosX, curPosY;
 
-        curPosX = x;
-        curPosY = y;
-        stepX = 0;
-        stepY = -1;
+        std::array<labirint::direction, 4> directions {direction::UP, direction::RIGHT,
+                                                       direction::DOWN, direction::LEFT};
 
-        while (someMap.getSymbol(curPosX, curPosY) != '*')
+        for(auto dir : directions)
         {
-            curPosX += stepX;
-            curPosY += stepY;
-            if (someMap.getSymbol(curPosX, curPosY) == 'e')
+            curPosX = x;
+            curPosY = y;
+
+            if(scanLine('e', someMap, dir, curPosX, curPosY))
             {
                 x = curPosX;
                 y = curPosY;
-                return labirint::direction::UP;
+                return dir;
             }
         }
 
-        curPosX = x;
-        curPosY = y;
-        stepX = 1;
-        stepY = 0;
-        while (someMap.getSymbol(curPosX, curPosY) != '*')
-        {
-            curPosX += stepX;
-            curPosY += stepY;
-            if (someMap.getSymbol(curPosX, curPosY) == 'e')
+        return labirint::direction::HERE;
+    }
+
+    labirint::direction greedy::whereisWall(labirint::map &someMap, unsigned &x, unsigned &y)
+    {
+        unsigned curPosX, curPosY;
+
+        std::array<labirint::direction, 4> directions {direction::UP, direction::RIGHT,
+                                                       direction::DOWN, direction::LEFT};
+
+        labirint::direction dir = directions[rand() % 4];
+            curPosX = x;
+            curPosY = y;
+
+            if(scanLine('*', someMap, dir, curPosX, curPosY))
             {
                 x = curPosX;
                 y = curPosY;
-                return labirint::direction::RIGHT;
+                if(dir == direction::UP)
+                {
+                    y++;
+                }
+                else if(dir == direction::RIGHT)
+                {
+                    x--;
+                }
+                if(dir == direction::DOWN)
+                {
+                    y--;
+                }
+                if(dir == direction::LEFT)
+                {
+                    x++;
+                }
+                return dir;
             }
+
+
+        return labirint::direction::HERE;
+    }
+
+
+    bool greedy::scanLine(char symbol, labirint::map &someMap, labirint::direction someDirection, unsigned &x, unsigned &y)
+    {
+        unsigned curPosX = x;
+        unsigned curPosY = y;
+
+        int stepX = 0, stepY = 0;
+
+        switch(someDirection) //toDo вынести повыше
+        {
+            case direction::UP:
+                stepY = -1;
+                break;
+            case direction::RIGHT:
+                stepX = 1;
+                break;
+            case direction::DOWN:
+                stepY = 1;
+                break;
+            case direction::LEFT:
+                stepX = -1;
+                break;
         }
 
-        curPosX = x;
-        curPosY = y;
-        stepX = 0;
-        stepY = 1;
-        while (someMap.getSymbol(curPosX, curPosY) != '*')
+        while (someMap.getSymbol(curPosX+stepX, curPosY+stepY) == ' ')
         {
             curPosX += stepX;
             curPosY += stepY;
-            if (someMap.getSymbol(curPosX, curPosY) == 'e')
-            {
-                x = curPosX;
-                y = curPosY;
-                return labirint::direction::DOWN;
-            }
         }
 
-        curPosX = x;
-        curPosY = y;
-        stepX = -1;
-        stepY = 0;
-        while (someMap.getSymbol(curPosX, curPosY) != '*')
+        curPosX += stepX;
+        curPosY += stepY;
+        if (someMap.getSymbol(curPosX, curPosY) == symbol)
         {
-            curPosX += stepX;
-            curPosY += stepY;
-            if (someMap.getSymbol(curPosX, curPosY) == 'e')
-            {
-                x = curPosX;
-                y = curPosY;
-                return labirint::direction::LEFT;
-            }
+            x = curPosX;
+            y = curPosY;
+            return true;
         }
+
+        return false;
     }
 }
