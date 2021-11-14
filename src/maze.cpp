@@ -22,7 +22,7 @@ void labirint::maze::showMaze()
 {
     while(true)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds (50));
+        std::this_thread::sleep_for(std::chrono::milliseconds (100));
         clearShow();
         for (unsigned i = 0; i < m_map.heigth(); ++i)
         {
@@ -35,7 +35,7 @@ void labirint::maze::showMaze()
         m_players[0].step(m_map);
         m_players[1].step(m_map);
         m_players[2].step(m_map);
-        m_players[3].step(m_map);
+        //m_players[3].step(m_map);
     }
 }
 
